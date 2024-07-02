@@ -1,0 +1,20 @@
+---
+- name: Config Bastion Server
+  hosts: all
+  gather_facts: true
+  tasks:
+    -name: update and upgrade packeges 
+    apt: 
+      update_cache: yes 
+      upgrade: dist 
+
+    -name: Install necessery packeges
+    apt:
+      name:
+        -git 
+        -vim
+        -htop
+        -ufw
+        -fail2ban
+      state: present
+    
