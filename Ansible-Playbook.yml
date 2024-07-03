@@ -1,20 +1,35 @@
 ---
 - name: Config Bastion Server
-  hosts: all
-  gather_facts: true
+  hosts: localhost
+  become: yes
   tasks:
-    -name: update and upgrade packeges 
-    apt: 
-      update_cache: yes 
-      upgrade: dist 
+    - name: Install necessary packages
+      apt:
+        name:
+          - git
+          - vim
+          - htop
+          - ufw
+          - fail2ban
+        state: present
 
-    -name: Install necessery packeges
-    apt:
-      name:
-        -git 
-        -vim
-        -htop
-        -ufw
-        -fail2ban
-      state: present
-    
+    - name: Enable UFW
+      ufw:
+        state: enabled
+        policy: allow
+
+    - name: Allow SSH
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Enable and start fail2ban
+      service:
+        name: fail2ban
+        state: started
+        enabled: yes
+
+    - name: Ensure the system is up to date
+      apt:
+        update_cache: yes
+        upgrade: dist
